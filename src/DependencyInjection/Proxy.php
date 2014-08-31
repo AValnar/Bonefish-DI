@@ -70,7 +70,7 @@ class Proxy
     {
         $dependency = $this->container->get($this->className);
         $this->parent->{$this->property} = $dependency;
-        return call_user_func(array($this->parent->{$this->property},$name),$arguments);
+        return call_user_func_array(array($this->parent->{$this->property},$name),$arguments);
     }
 
     public function __sleep()
