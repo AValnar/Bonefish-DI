@@ -150,7 +150,7 @@ class Container
             $this->processProperty($obj, $property);
         }
 
-        if (is_callable(array($obj, '__init'))) {
+        if (method_exists($obj,'__init') && is_callable(array($obj, '__init'))) {
             $obj->__init();
         }
 
