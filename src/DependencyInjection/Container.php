@@ -150,7 +150,7 @@ class Container
             $this->processProperty($obj, $property);
         }
 
-        if (method_exists($obj,'__init') && is_callable(array($obj, '__init'))) {
+        if (method_exists($obj, '__init') && is_callable(array($obj, '__init'))) {
             $obj->__init();
         }
 
@@ -171,7 +171,11 @@ class Container
                 if (!preg_match(',@var\s+([^\s]+),', $docComment, $matches)) {
                     throw new \Exception('No @var tag found for property ' . $property->getName() . ' with @inject tag');
                 }
-                $this->performDependencyInjection($obj, $property, $matches[1]);
+                $eager = false;
+                if ($this->existsEagerInjectDecorator($item)) {
+                    $eager = true;
+                }
+                $this->performDependencyInjection($obj, $property, $matches[1], $eager);
             }
         }
     }
@@ -203,19 +207,37 @@ class Container
     }
 
     /**
+     * Check if string contains @inject eagerly
+     *
+     * @param $item
+     * @return bool
+     */
+
+    protected function existsEagerInjectDecorator($item)
+    {
+        return strpos($item, '@inject eagerly') !== false;
+    }
+
+    /**
      * Perform lazy Dependency Injection
      *
      * @param mixed $parent
      * @param \ReflectionProperty $property
      * @param string $className
+     * @param bool $eager
      */
 
-    protected function performDependencyInjection($parent, \ReflectionProperty $property, $className)
+    protected function performDependencyInjection($parent, \ReflectionProperty $property, $className, $eager)
     {
         if ($className == '\Bonefish\DependencyInjection\Container') {
             $value = $this;
         } else {
-            $value = new Proxy($className, $property->getName(), $parent, $this);
+            if (!$eager) {
+                $value = new Proxy($className, $property, $parent, $this);
+            } else {
+                $value = $this->get($className);
+            }
+
         }
         $this->injectValueIntoProperty($parent, $property, $value);
     }

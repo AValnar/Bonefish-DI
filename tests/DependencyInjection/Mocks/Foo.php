@@ -13,7 +13,8 @@
 namespace Bonefish\Tests\DependencyInjection\Mocks;
 
 
-class Foo {
+class Foo
+{
 
     /**
      * @var bool
@@ -35,7 +36,13 @@ class Foo {
      * @var \stdClass
      * @inject
      */
-    public $protectedPropertyWithInject;
+    protected $protectedPropertyWithInject = false;
+
+    /**
+     * @var \stdClass
+     * @inject eagerly
+     */
+    public $publicPropertyWithInjectEagerly;
 
     /**
      * @var \Bonefish\DependencyInjection\Container

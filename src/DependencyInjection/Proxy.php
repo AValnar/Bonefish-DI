@@ -49,7 +49,7 @@ class Proxy
 
     /**
      * @param string $className
-     * @param string $property
+     * @param \ReflectionProperty $property
      * @param mixed $parent
      * @param Container $container
      */
@@ -69,8 +69,14 @@ class Proxy
     public function __call($name, $arguments = array())
     {
         $dependency = $this->container->get($this->className);
-        $this->parent->{$this->property} = $dependency;
-        return call_user_func_array(array($this->parent->{$this->property},$name),$arguments);
+        $this->property->setAccessible(true);
+        $this->property->setValue($this->parent, $dependency);
+
+        if (!$this->property->isPublic()) {
+            return call_user_func_array(array($this->parent->{'get'.ucfirst($this->property->getName())}, $name), $arguments);
+        }
+
+        return call_user_func_array(array($this->parent->{$this->property->getName()}, $name), $arguments);
     }
 
     public function __sleep()

@@ -12,9 +12,9 @@
 
 namespace Bonefish\Tests\DependencyInjection;
 
-require __DIR__.'/Mocks/Foo.php';
-require __DIR__.'/Mocks/Bar.php';
-require __DIR__.'/Mocks/AbstractFoo.php';
+require __DIR__ . '/Mocks/Foo.php';
+require __DIR__ . '/Mocks/Bar.php';
+require __DIR__ . '/Mocks/AbstractFoo.php';
 
 use Bonefish\DependencyInjection\Container;
 use Bonefish\DependencyInjection\Proxy;
@@ -67,18 +67,18 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateContainer()
     {
-        $this->assertEquals($this->container,$this->container->create('\Bonefish\DependencyInjection\Container'));
+        $this->assertEquals($this->container, $this->container->create('\Bonefish\DependencyInjection\Container'));
     }
 
     public function testGetContainer()
     {
-        $this->assertEquals($this->container,$this->container->get('\Bonefish\DependencyInjection\Container'));
+        $this->assertEquals($this->container, $this->container->get('\Bonefish\DependencyInjection\Container'));
     }
 
     public function testCreateWithoutAlias()
     {
         $object = $this->container->create('\stdClass');
-        $this->assertEquals(true,($object instanceof \stdClass));
+        $this->assertEquals(true, ($object instanceof \stdClass));
         $this->assertEquals(array(), $this->container->getSingletons());
     }
 
@@ -87,9 +87,9 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateWithAlias()
     {
-        $this->container->alias('\stdClass','foo');
+        $this->container->alias('\stdClass', 'foo');
         $object = $this->container->create('foo');
-        $this->assertEquals(true,($object instanceof \stdClass));
+        $this->assertEquals(true, ($object instanceof \stdClass));
         $this->assertEquals(array(), $this->container->getSingletons());
     }
 
@@ -99,9 +99,9 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     public function testGetWithoutAlias()
     {
         $object = $this->container->get('\stdClass');
-        $this->assertEquals(true,($object instanceof \stdClass));
+        $this->assertEquals(true, ($object instanceof \stdClass));
         $this->assertEquals(array('\stdClass'), $this->container->getSingletons());
-        $this->assertEquals($object,$this->container->get('\stdClass'));
+        $this->assertEquals($object, $this->container->get('\stdClass'));
     }
 
     /**
@@ -110,13 +110,13 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetWithAlias()
     {
-        $this->container->alias('\stdClass','foo');
+        $this->container->alias('\stdClass', 'foo');
         $object = $this->container->get('foo');
-        $this->assertEquals(true,($object instanceof \stdClass));
+        $this->assertEquals(true, ($object instanceof \stdClass));
         $this->assertEquals(array('\stdClass'), $this->container->getSingletons());
-        $this->assertEquals($object,$this->container->get('\stdClass'));
-        $this->container->alias('\stdClass','bar');
-        $this->assertEquals($object,$this->container->get('bar'));
+        $this->assertEquals($object, $this->container->get('\stdClass'));
+        $this->container->alias('\stdClass', 'bar');
+        $this->assertEquals($object, $this->container->get('bar'));
     }
 
     /**
@@ -136,11 +136,12 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     {
         /** @var \Bonefish\Tests\DependencyInjection\Mocks\Foo $object */
         $object = $this->container->create('\Bonefish\Tests\DependencyInjection\Mocks\Foo');
-        $this->assertEquals(true,($object instanceof \Bonefish\Tests\DependencyInjection\Mocks\Foo));
-        $this->assertEquals(true,$object->initCalled);
-        $this->assertEquals(true,($object->publicPropertyWithInject instanceof Proxy));
-        $this->assertEquals(true,($object->getProtectedPropertyWithInject() instanceof Proxy));
-        $this->assertEquals(false,$object->publicPropertyNoInject);
+        $this->assertEquals(true, ($object instanceof \Bonefish\Tests\DependencyInjection\Mocks\Foo));
+        $this->assertEquals(true, $object->initCalled);
+        $this->assertEquals(true, ($object->publicPropertyWithInject instanceof Proxy));
+        $this->assertEquals(true, ($object->publicPropertyWithInjectEagerly instanceof \stdClass));
+        $this->assertEquals(true, ($object->getProtectedPropertyWithInject() instanceof Proxy));
+        $this->assertEquals(false, $object->publicPropertyNoInject);
     }
 
     /**
@@ -151,12 +152,13 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     {
         /** @var \Bonefish\Tests\DependencyInjection\Mocks\Foo $object */
         $object = $this->container->create('\Bonefish\Tests\DependencyInjection\Mocks\Foo');
-        $this->assertEquals(true,($object instanceof \Bonefish\Tests\DependencyInjection\Mocks\Foo));
-        $this->assertEquals(true,$object->initCalled);
-        $this->assertEquals(true,($object->publicPropertyWithInject instanceof Proxy));
-        $this->assertEquals(true,($object->getProtectedPropertyWithInject() instanceof Proxy));
-        $this->assertEquals(false,$object->publicPropertyNoInject);
-        $this->assertEquals($this->container,$object->container);
+        $this->assertEquals(true, ($object instanceof \Bonefish\Tests\DependencyInjection\Mocks\Foo));
+        $this->assertEquals(true, $object->initCalled);
+        $this->assertEquals(true, ($object->publicPropertyWithInject instanceof Proxy));
+        $this->assertEquals(true, ($object->publicPropertyWithInjectEagerly instanceof \stdClass));
+        $this->assertEquals(true, ($object->getProtectedPropertyWithInject() instanceof Proxy));
+        $this->assertEquals(false, $object->publicPropertyNoInject);
+        $this->assertEquals($this->container, $object->container);
     }
 
     /**
