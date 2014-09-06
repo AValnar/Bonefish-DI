@@ -73,7 +73,7 @@ class Proxy
         $this->property->setValue($this->parent, $dependency);
 
         if (!$this->property->isPublic()) {
-            return call_user_func_array(array($this->parent->{'get'.ucfirst($this->property->getName())}, $name), $arguments);
+            return call_user_func_array(array($this->parent->{'get'.ucfirst($this->property->getName())}(), $name), $arguments);
         }
 
         return call_user_func_array(array($this->parent->{$this->property->getName()}, $name), $arguments);
